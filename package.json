@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch",
-    "dev": "webpack --watch",
+    "start": "serve & npm run watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -25,6 +25,7 @@
   "devDependencies": {
     "copy-webpack-plugin": "^5.1.1",
     "file-loader": "^6.0.0",
+    "serve": "^11.3.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   }
