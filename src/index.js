@@ -1,12 +1,15 @@
 import pdfjs from 'pdfjs-dist';
 
 import { parseComdirectActivity } from './brokers/comdirect'
+import { parseTradeRepublicActivity } from './brokers/traderepublic'
 
 const getActivity = (textArr) => {
   const broker = identifyBroker(textArr)
 
   if (broker === 'comdirect') {
     return parseComdirectActivity(textArr)
+  } else if (broker === 'traderepublic') {
+    return parseTradeRepublicActivity(textArr)
   } else {
     console.log('Unsupported broker')
     return;
@@ -15,10 +18,13 @@ const getActivity = (textArr) => {
 
 const identifyBroker = (textArr) => {
   const isComdirect = textArr.some(t => t.includes('comdirect bank'));
-
+  const isTradeRepublic = textArr.some(t => t.includes('TRADE REPUBLIC BANK GMBH'));
   if (isComdirect) {
     return 'comdirect'
-  } else {
+  } if (isTradeRepublic) {
+    return 'traderepublic'
+  }
+  else {
     return;
   }
 }
