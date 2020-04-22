@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch",
-    "dev": "webpack --watch",
+    "start": "node demo/js/serve.js & npm run watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -19,6 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "date-fns": "^2.12.0",
+    "express": "^4.17.1",
     "lodash": "^4.17.15",
     "pdfjs-dist": "^2.3.200"
   },
