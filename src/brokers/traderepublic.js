@@ -33,6 +33,7 @@ const findDateSell = (textArr) => {
   const searchTerm = "Verkauf am "
   const dateLine = textArr[textArr.findIndex((t) => t.includes(searchTerm))];
   const date = dateLine.split(searchTerm)[1].trim().substr(0, 10)
+  console.log("dateLine", dateLine)
   return date;
 };
 
@@ -52,9 +53,18 @@ const findShares = (textArr) => {
   return parseGermanNum(shares);
 };
 
-const findAmount = (textArr) => {
+const findAmountBuy = (textArr) => {
   const searchTerm = "GESAMT"
   const totalAmountLine = textArr[textArr.indexOf(searchTerm) + 1];
+  console.log("totalAmountLine", totalAmountLine)
+  const totalAmount = totalAmountLine.split(" ")[0].trim();
+  console.log("totalAmount", totalAmount)
+  return parseGermanNum(totalAmount);
+};
+
+const findAmountSell = (textArr) => {
+  const searchTerm = "GESAMT"
+  const totalAmountLine = textArr[textArr.lastIndexOf(searchTerm) + 1];
   console.log("totalAmountLine", totalAmountLine)
   const totalAmount = totalAmountLine.split(" ")[0].trim();
   console.log("totalAmount", totalAmount)
@@ -82,7 +92,7 @@ export const parseTradeRepublicActivity = (textArr) => {
   const isSell = textArr.some((t) => t.includes("Verkauf am"));
   const isDividend = textArr.some((t) => t.includes("Dividende mit dem Ex-Tag"));
 
-  let type, date, isin, company, shares, price, amount, fee;
+  let type, date, isin, company, shares, price, amount, fee, tax;
 
   if (isBuy) {
     type = "Buy";
@@ -90,18 +100,20 @@ export const parseTradeRepublicActivity = (textArr) => {
     company = findCompany(textArr, 1);
     date = findDateBuy(textArr);
     shares = findShares(textArr);
-    amount = findAmount(textArr);
+    amount = findAmountBuy(textArr);
     price = amount / shares;
     fee = findFee(textArr);
+    tax = 0;
   } else if (isSell) {
     type = "Sell";
     isin = findISIN(textArr, 2);
     company = findCompany(textArr, 1);
     date = findDateSell(textArr);
     shares = findShares(textArr);
-    amount = findAmount(textArr);
+    amount = findAmountSell(textArr);
     price = amount / shares;
     fee = findFee(textArr);
+    tax = 0;
   } else if (isDividend) {
     type = "Dividend";
     isin = findISIN(textArr, 3);
