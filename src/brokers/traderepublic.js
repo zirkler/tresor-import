@@ -87,6 +87,35 @@ const findFee = (textArr) => {
   return Math.abs(parseGermanNum(feeNumberString))
 };
 
+const findTax = (textArr) => {
+  const searchTerm = "Zwischensumme"
+  var totalTax = 0.0
+
+  if (textArr.lastIndexOf("Kapitalertragssteuer") != -1) {
+    const taxPositionLine = textArr[textArr.lastIndexOf("Kapitalertragssteuer") + 1];
+    const taxPositionString = taxPositionLine.split(" EUR")[0]
+    const taxPositionAmount = Math.abs(parseGermanNum(taxPositionString))
+    totalTax += taxPositionAmount
+  }
+
+
+  if (textArr.lastIndexOf("Solidaritätszuschlag") != -1) {
+    const taxPositionLine = textArr[textArr.lastIndexOf("Solidaritätszuschlag") + 1];
+    const taxPositionString = taxPositionLine.split(" EUR")[0]
+    const taxPositionAmount = Math.abs(parseGermanNum(taxPositionString))
+    totalTax += taxPositionAmount
+  }
+
+
+  if (textArr.lastIndexOf("Kirchensteuer") != -1) {
+    const taxPositionLine = textArr[textArr.lastIndexOf("Kirchensteuer") + 1];
+    const taxPositionString = taxPositionLine.split(" EUR")[0]
+    const taxPositionAmount = Math.abs(parseGermanNum(taxPositionString))
+    totalTax += taxPositionAmount
+  }
+  return totalTax
+}
+
 export const parseTradeRepublicActivity = (textArr) => {
   const isBuy = textArr.some((t) => t.includes("Kauf am"));
   const isSell = textArr.some((t) => t.includes("Verkauf am"));
@@ -103,7 +132,7 @@ export const parseTradeRepublicActivity = (textArr) => {
     amount = findAmountBuy(textArr);
     price = amount / shares;
     fee = findFee(textArr);
-    tax = 0;
+    tax = findTax(textArr);
   } else if (isSell) {
     type = "Sell";
     isin = findISIN(textArr, 2);
@@ -123,6 +152,7 @@ export const parseTradeRepublicActivity = (textArr) => {
     amount = findPayout(textArr);
     price = amount / shares;
     fee = 0;
+    tax = findTax(textArr);
   }
 
   const activity = {
@@ -135,6 +165,7 @@ export const parseTradeRepublicActivity = (textArr) => {
     price,
     amount,
     fee,
+    tax
   };
 
   console.log("activity", activity);

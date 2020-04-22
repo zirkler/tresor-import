@@ -67,6 +67,14 @@
                       <small v-else>{{activity.company}}</small>
                     </strong>
                   </p>
+
+                  <p>
+                    <small class="is-size-7">Tax: {{formatPrice(activity.tax)}}€</small>
+                  </p>
+                  <p>
+                    <small class="is-size-7">Fee: {{formatPrice(activity.fee)}}€</small>
+                  </p>
+
                   <div class="level is-mobile">
                     <div class="level-left">
                       <div class="level-item">
