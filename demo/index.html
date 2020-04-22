@@ -1,0 +1,60 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <!-- Place favicon.ico in the root directory -->
+
+</head>
+
+<body>
+  <!--[if IE]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+
+  <!-- Add your site or application content here -->
+  <div id="app">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">
+          Tresor One - PDF Import Demo
+        </h1>
+        <p class="subtitle">
+          Yoyo yo
+        </p>
+        <p>
+          <div class="file">
+            <label class="file-label">
+              <input class="file-input" type="file" name="resume" ref="myFiles" @change="fileHandler" multiple />
+              <span class="file-cta">
+                <span class="file-label">PDFs hinzufügen</span>
+              </span>
+            </label>
+          </div>
+          <ul>
+            <li v-for="(a, i) in activities" :key="i">
+              {{a}}
+            </li>
+          </ul>
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <script src="js/vendor/modernizr-3.8.0.min.js"></script>
+  <script src="js/plugins.js"></script>
+  <script src="../dist/main.js"></script>
+</body>
+
+</html>
