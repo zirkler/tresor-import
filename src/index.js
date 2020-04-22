@@ -1,5 +1,4 @@
 import pdfjs from 'pdfjs-dist';
-// der shit geht noch net 👆
 
 import { parseComdirectActivity } from './brokers/comdirect'
 
