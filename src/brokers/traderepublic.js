@@ -132,7 +132,7 @@ export const parseTradeRepublicActivity = (textArr) => {
     amount = findAmountBuy(textArr);
     price = amount / shares;
     fee = findFee(textArr);
-    tax = findTax(textArr);
+    tax = 0;
   } else if (isSell) {
     type = "Sell";
     isin = findISIN(textArr, 2);
@@ -142,7 +142,7 @@ export const parseTradeRepublicActivity = (textArr) => {
     amount = findAmountSell(textArr);
     price = amount / shares;
     fee = findFee(textArr);
-    tax = 0;
+    tax = findTax(textArr);
   } else if (isDividend) {
     type = "Dividend";
     isin = findISIN(textArr, 3);
