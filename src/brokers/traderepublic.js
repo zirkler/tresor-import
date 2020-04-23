@@ -116,14 +116,23 @@ const findTax = (textArr) => {
   return totalTax
 }
 
-export const parseTradeRepublicActivity = (textArr) => {
-  const isBuy = textArr.some((t) => t.includes("Kauf am"));
-  const isSell = textArr.some((t) => t.includes("Verkauf am"));
-  const isDividend = textArr.some((t) => t.includes("Dividende mit dem Ex-Tag"));
+const isBuy = textArr =>
+  textArr.some(t => t.includes('Kauf am'));
 
+const isSell = textArr =>
+  textArr.some(t => t.includes('Verkauf am'));
+
+const isDividend = textArr =>
+  textArr.some(t => t.includes('Dividende mit dem Ex-Tag'));
+
+export const canParseData = textArr =>
+  textArr.some(t => t.includes('TRADE REPUBLIC BANK GMBH')) &&
+  (isBuy(textArr) || isSell(textArr) || isDividend(textArr));
+
+export const parseData = (textArr) => {
   let type, date, isin, company, shares, price, amount, fee, tax;
 
-  if (isBuy) {
+  if (isBuy(textArr)) {
     type = "Buy";
     isin = findISIN(textArr, 0);
     company = findCompany(textArr, 1);
@@ -133,7 +142,7 @@ export const parseTradeRepublicActivity = (textArr) => {
     price = amount / shares;
     fee = findFee(textArr);
     tax = 0;
-  } else if (isSell) {
+  } else if (isSell(textArr)) {
     type = "Sell";
     isin = findISIN(textArr, 2);
     company = findCompany(textArr, 1);
@@ -143,7 +152,7 @@ export const parseTradeRepublicActivity = (textArr) => {
     price = amount / shares;
     fee = findFee(textArr);
     tax = findTax(textArr);
-  } else if (isDividend) {
+  } else if (isDividend(textArr)) {
     type = "Dividend";
     isin = findISIN(textArr, 3);
     company = findCompany(textArr, 2);

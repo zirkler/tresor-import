@@ -1,35 +1,30 @@
 import pdfjs from 'pdfjs-dist';
+import * as brokers from './brokers';
 
-import { parseComdirectActivity } from './brokers/comdirect'
-import { parseTradeRepublicActivity } from './brokers/traderepublic'
 
-const getActivity = (textArr) => {
-  const broker = identifyBroker(textArr)
+const getActivity = textArr => {
+  const broker = getBroker(textArr);
 
-  if (broker === 'comdirect') {
-    return parseComdirectActivity(textArr)
-  } else if (broker === 'traderepublic') {
-    return parseTradeRepublicActivity(textArr)
-  } else {
-    console.log('Unsupported broker')
-    return;
+  return broker.parseData(textArr);
+};
+
+const getBroker = textArr => {
+  const supportedBrokers = Object.values(brokers).filter(broker =>
+    broker.canParseData(textArr)
+  );
+
+  if (supportedBrokers.length > 1) {
+    throw 'Multiple supported brokers found!';
   }
-}
 
-const identifyBroker = (textArr) => {
-  const isComdirect = textArr.some(t => t.includes('comdirect bank'));
-  const isTradeRepublic = textArr.some(t => t.includes('TRADE REPUBLIC BANK GMBH'));
-  if (isComdirect) {
-    return 'comdirect'
-  } if (isTradeRepublic) {
-    return 'traderepublic'
+  if (supportedBrokers.length === 0) {
+    throw 'No supported broker found!';
   }
-  else {
-    return;
-  }
-}
 
-export const extractActivity = async (e) => {
+  return supportedBrokers[0];
+};
+
+export const extractActivity = async e => {
   let activity;
   let textArr;
 
@@ -46,14 +41,14 @@ export const extractActivity = async (e) => {
   console.log(textArr);
 
   try {
-    activity = getActivity(textArr)
+    activity = getActivity(textArr);
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
 
   if (!activity) {
     activity = { parserError: true };
   }
 
-  return activity
-}
+  return activity;
+};
