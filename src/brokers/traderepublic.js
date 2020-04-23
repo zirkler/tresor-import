@@ -169,9 +169,7 @@ export const parseTradeRepublicActivity = (textArr) => {
   };
 
   console.log("activity", activity);
-
-  // const valid = every(values(activity), (a) => !!a || a === 0);
-  const valid = true
+  const valid = every(values(activity), (a) => !!a || a === 0);
 
   if (!valid) {
     console.error("Error while parsing PDF", activity);
