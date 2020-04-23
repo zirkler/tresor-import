@@ -136,7 +136,7 @@ export const canParseData = (textArr) =>
     isSell(textArr) ||
     isDividend(textArr));
 
-export const parseTradeRepublicActivity = (textArr) => {
+export const parseData = (textArr) => {
   let type, date, isin, company, shares, price, amount, fee, tax;
 
   if (isBuySingle(textArr) || isBuySavingsPlan(textArr)) {

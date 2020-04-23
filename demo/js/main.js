@@ -1,12 +1,10 @@
-
-import format from 'date-fns/format';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import parse from 'date-fns/parse';
 import { de } from 'date-fns/locale';
 
-import { extractActivity } from '../../src'
+import { extractActivity } from '../../src';
 
-var app = new Vue({
+new Vue({
   el: '#app',
   data: {
     message: 'Hello Vue!',
@@ -37,12 +35,12 @@ var app = new Vue({
       });
     },
     numberWithCommas(x) {
-      var parts = x.toString().split(".");
-      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-      return parts.join(",");
+      var parts = x.toString().split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      return parts.join(',');
     },
     formatPrice(p = 0) {
-      return this.numberWithCommas(p.toFixed(2))
+      return this.numberWithCommas(p.toFixed(2));
     },
     fileHandler() {
       const files = this.$refs.myFiles.files;
@@ -61,14 +59,14 @@ var app = new Vue({
         const a = {
           ...activity,
           filename: file.name,
-          parsed: true
+          parsed: true,
         };
 
         console.log(a);
-        this.activities.push(a)
+        this.activities.push(a);
       };
       fileReader.readAsArrayBuffer(file);
       return activity;
     },
-  }
-})
+  },
+});
