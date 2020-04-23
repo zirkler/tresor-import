@@ -39,7 +39,7 @@ const findDateSell = (textArr) => {
 
 const findDateDividend = (textArr) => {
   // Extract the date from a string like this: "Dividende mit dem Ex-Tag 13.02.2020."
-  const searchTerm = "Dividende mit dem Ex-Tag "
+  const searchTerm = "mit dem Ex-Tag "
   const dateLine = textArr[textArr.findIndex((t) => t.includes(searchTerm))];
   const datePart = dateLine.split(searchTerm)[1].trim().substring(0, 10)
   const date = datePart;
@@ -119,7 +119,7 @@ const findTax = (textArr) => {
 export const parseTradeRepublicActivity = (textArr) => {
   const isBuy = textArr.some((t) => t.includes("Kauf am"));
   const isSell = textArr.some((t) => t.includes("Verkauf am"));
-  const isDividend = textArr.some((t) => t.includes("Dividende mit dem Ex-Tag"));
+  const isDividend = textArr.some((t) => t.includes("mit dem Ex-Tag"));
 
   let type, date, isin, company, shares, price, amount, fee, tax;
 
