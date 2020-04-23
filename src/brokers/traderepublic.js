@@ -1,8 +1,8 @@
-import format from "date-fns/format";
-import parse from "date-fns/parse";
+import format from 'date-fns/format';
+import parse from 'date-fns/parse';
 
-const parseGermanNum = (n) => {
-  return parseFloat(n.replace(/\./g, "").replace(",", "."));
+const parseGermanNum = n => {
+  return parseFloat(n.replace(/\./g, '').replace(',', '.'));
 };
 
 const findISIN = (text) => {
@@ -32,7 +32,7 @@ const findDateBuySavingsPlan = (textArr) => {
   return date;
 };
 
-const findDateSell = (textArr) => {
+const findDateSell = textArr => {
   // Extract the date from a string like this: "Market-Order Verkauf am 04.02.2020, um 14:02 Uhr an der Lang & Schwarz Exchange."
   const searchTerm = "Verkauf am ";
   const dateLine = textArr[textArr.findIndex((t) => t.includes(searchTerm))];
@@ -41,7 +41,7 @@ const findDateSell = (textArr) => {
   return date;
 };
 
-const findDateDividend = (textArr) => {
+const findDateDividend = textArr => {
   // Extract the date from a string like this: "Dividende mit dem Ex-Tag 13.02.2020."
   const searchTerm = "mit dem Ex-Tag ";
   const dateLine = textArr[textArr.findIndex((t) => t.includes(searchTerm))];
@@ -134,7 +134,7 @@ export const canParseData = (textArr) =>
     isSell(textArr) ||
     isDividend(textArr));
 
-export const parseData = (textArr) => {
+export const parseData = textArr => {
   let type, date, isin, company, shares, price, amount, fee, tax;
 
   if (isBuySingle(textArr) || isBuySavingsPlan(textArr)) {
@@ -150,7 +150,7 @@ export const parseData = (textArr) => {
     fee = findFee(textArr);
     tax = 0;
   } else if (isSell(textArr)) {
-    type = "Sell";
+    type = 'Sell';
     isin = findISIN(textArr);
     company = findCompany(textArr);
     date = findDateSell(textArr);
@@ -160,7 +160,7 @@ export const parseData = (textArr) => {
     fee = findFee(textArr);
     tax = findTax(textArr);
   } else if (isDividend(textArr)) {
-    type = "Dividend";
+    type = 'Dividend';
     isin = findISIN(textArr);
     company = findCompany(textArr);
     date = findDateDividend(textArr);
@@ -174,9 +174,9 @@ export const parseData = (textArr) => {
   }
 
   const activity = {
-    broker: "traderepublic",
+    broker: 'traderepublic',
     type,
-    date: format(parse(date, "dd.MM.yyyy", new Date()), "yyyy-MM-dd"),
+    date: format(parse(date, 'dd.MM.yyyy', new Date()), 'yyyy-MM-dd'),
     isin,
     company,
     shares,
@@ -189,7 +189,7 @@ export const parseData = (textArr) => {
   const valid = every(values(activity), (a) => !!a || a === 0);
 
   if (!valid) {
-    console.error("Error while parsing PDF", activity);
+    console.error('Error while parsing PDF', activity);
     return undefined;
   } else {
     return activity;

@@ -10,7 +10,7 @@ const getActivity = textArr => {
   return broker.parseData(textArr);
 };
 
-const getBroker = textArr => {
+export const getBroker = textArr => {
   const supportedBrokers = Object.values(brokers).filter(broker =>
     broker.canParseData(textArr)
   );
