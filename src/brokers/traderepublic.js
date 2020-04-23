@@ -37,7 +37,7 @@ const findDateSell = textArr => {
 
 const findDateDividend = textArr => {
   // Extract the date from a string like this: "Dividende mit dem Ex-Tag 13.02.2020."
-  const searchTerm = 'Dividende mit dem Ex-Tag ';
+  const searchTerm = 'mit dem Ex-Tag ';
   const dateLine = textArr[textArr.findIndex(t => t.includes(searchTerm))];
   const datePart = dateLine.split(searchTerm)[1].trim().substring(0, 10);
   const date = datePart;
@@ -118,7 +118,7 @@ const isBuy = textArr => textArr.some(t => t.includes('Kauf am'));
 const isSell = textArr => textArr.some(t => t.includes('Verkauf am'));
 
 const isDividend = textArr =>
-  textArr.some(t => t.includes('Dividende mit dem Ex-Tag'));
+  textArr.some(t => t.includes('mit dem Ex-Tag'));
 
 export const canParseData = textArr =>
   textArr.some(t => t.includes('TRADE REPUBLIC BANK GMBH')) &&
@@ -172,10 +172,8 @@ export const parseData = textArr => {
     tax,
   };
 
-  console.log('activity', activity);
-
-  // const valid = every(values(activity), (a) => !!a || a === 0);
-  const valid = true;
+  console.log("activity", activity);
+  const valid = every(values(activity), (a) => !!a || a === 0);
 
   if (!valid) {
     console.error('Error while parsing PDF', activity);
