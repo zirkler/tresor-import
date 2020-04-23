@@ -1,20 +1,18 @@
 import format from "date-fns/format";
 import parse from "date-fns/parse";
-import every from "lodash/every";
-import values from "lodash/values";
 
 const parseGermanNum = (n) => {
   return parseFloat(n.replace(/\./g, "").replace(",", "."));
 };
 
-const findISIN = (text, span) => {
+const findISIN = (text) => {
   const isinLine = text[text.findIndex((t) => t.includes("ISIN:"))];
   console.log("isinLine", isinLine)
   const isin = isinLine.substr(isinLine.length - 12);
   return isin;
 };
 
-const findCompany = (text, span) => {
+const findCompany = (text) => {
   const companyLine = text[text.findIndex((t) => t.includes("BETRAG")) + 1];
   console.log("companyline", companyLine)
   return companyLine;
@@ -88,7 +86,6 @@ const findFee = (textArr) => {
 };
 
 const findTax = (textArr) => {
-  const searchTerm = "Zwischensumme"
   var totalTax = 0.0
 
   if (textArr.lastIndexOf("Kapitalertragssteuer") != -1) {
@@ -134,8 +131,8 @@ export const parseData = (textArr) => {
 
   if (isBuy(textArr)) {
     type = "Buy";
-    isin = findISIN(textArr, 0);
-    company = findCompany(textArr, 1);
+    isin = findISIN(textArr);
+    company = findCompany(textArr);
     date = findDateBuy(textArr);
     shares = findShares(textArr);
     amount = findAmountBuy(textArr);
@@ -144,8 +141,8 @@ export const parseData = (textArr) => {
     tax = 0;
   } else if (isSell(textArr)) {
     type = "Sell";
-    isin = findISIN(textArr, 2);
-    company = findCompany(textArr, 1);
+    isin = findISIN(textArr);
+    company = findCompany(textArr);
     date = findDateSell(textArr);
     shares = findShares(textArr);
     amount = findAmountSell(textArr);
@@ -154,8 +151,8 @@ export const parseData = (textArr) => {
     tax = findTax(textArr);
   } else if (isDividend(textArr)) {
     type = "Dividend";
-    isin = findISIN(textArr, 3);
-    company = findCompany(textArr, 2);
+    isin = findISIN(textArr);
+    company = findCompany(textArr);
     date = findDateDividend(textArr);
     shares = findShares(textArr);
     amount = findPayout(textArr);
