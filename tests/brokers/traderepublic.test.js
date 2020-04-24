@@ -1,0 +1,114 @@
+import { parseData } from '../../src/brokers/traderepublic';
+
+const stockSingleBuy = require('./__mocks__/traderepublic/stock_single_buy.json');
+const etfSavingsPlanBuy = require('./__mocks__/traderepublic/etf_savings_plan_buy.json');
+const stockSell = require('./__mocks__/traderepublic/stock_sell.json');
+const stockDividend = require('./__mocks__/traderepublic/stock_dividend.json');
+const etfDividend = require('./__mocks__/traderepublic/etf_dividend.json');
+
+describe('TradeRepublic broker', () => {
+  let consoleErrorSpy;
+
+  describe('Stock Single Buy', () => {
+    test('should map the pdf data correctly', () => {
+      const activity = parseData(stockSingleBuy);
+
+      expect(activity).toEqual({
+        broker: 'traderepublic',
+        type: 'Buy',
+        date: '2019-11-29',
+        isin: 'GB00B03MLX29',
+        company: 'Royal Dutch Shell',
+        shares: 382,
+        price: 26.14,
+        amount: 9985.48,
+        fee: 1,
+        tax: 0,
+      });
+    });
+  });
+
+  describe('ETF Savings Plan Buy', () => {
+    test('should map the pdf data correctly', () => {
+      const activity = parseData(etfSavingsPlanBuy);
+
+      expect(activity).toEqual({
+        broker: 'traderepublic',
+        type: 'Buy',
+        date: '2020-01-16',
+        isin: 'IE00B1YZSC51',
+        company: 'iShsII-Core MSCI Europe U.ETF',
+        shares: 1.3404,
+        price: 26.11,
+        amount: 35.0,
+        fee: 0,
+        tax: 0,
+      });
+    });
+  });
+
+  describe('Stock Sell', () => {
+    test('should map the pdf data correctly', () => {
+      const activity = parseData(stockSell);
+
+      expect(activity).toEqual({
+        amount: 2512.53,
+        broker: 'traderepublic',
+        company: 'Tesla Inc.',
+        date: '2020-02-04',
+        fee: 1,
+        isin: 'US88160R1014',
+        price: 837.51,
+        shares: 3,
+        tax: 36.47,
+        type: 'Sell',
+      });
+    });
+  });
+
+  describe('Stock Dividend', () => {
+    test('should map the pdf data correctly', () => {
+      const activity = parseData(stockDividend);
+
+      expect(activity).toEqual({
+        amount: 118.21,
+        broker: 'traderepublic',
+        company: 'Royal Dutch Shell',
+        date: '2020-02-13',
+        fee: 0,
+        isin: 'GB00B03MLX29',
+        price: 0.31,
+        shares: 382,
+        tax: 17.94,
+        type: 'Dividend',
+      });
+    });
+  });
+
+  describe('ETF Dividend', () => {
+    test('should map the pdf data correctly', () => {
+      const activity = parseData(etfDividend);
+
+      expect(activity).toEqual({
+        amount: 17.52,
+        broker: 'traderepublic',
+        company: 'iShsII-Dev.Mkts Prop.Yld U.ETF',
+        date: '2020-02-13',
+        fee: 0,
+        isin: 'IE00B1FZS350',
+        price: 0.12,
+        shares: 141,
+        tax: 6.8100000000000005,
+        type: 'Dividend',
+      });
+    });
+  });
+
+  beforeEach(() => {
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
+  });
+});

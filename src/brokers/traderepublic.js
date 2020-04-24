@@ -1,5 +1,7 @@
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
+import every from 'lodash/every';
+import values from 'lodash/values';
 
 const parseGermanNum = n => {
   return parseFloat(n.replace(/\./g, '').replace(',', '.'));
@@ -18,9 +20,17 @@ const findCompany = text => {
   return companyLine;
 };
 
-const findDateBuy = textArr => {
+const findDateSingleBuy = textArr => {
   // Extract the date from a string like this: "Market-Order Kauf am 04.02.2020, um 14:02 Uhr an der Lang & Schwarz Exchange."
   const searchTerm = 'Kauf am ';
+  const dateLine = textArr[textArr.findIndex(t => t.includes(searchTerm))];
+  const date = dateLine.split(searchTerm)[1].trim().substr(0, 10);
+  return date;
+};
+
+const findDateBuySavingsPlan = textArr => {
+  // Extract the date from a string like this: "Sparplanausführung am 16.01.2020 an der Lang & Schwarz Exchange."
+  const searchTerm = 'Sparplanausführung am ';
   const dateLine = textArr[textArr.findIndex(t => t.includes(searchTerm))];
   const date = dateLine.split(searchTerm)[1].trim().substr(0, 10);
   return date;
@@ -80,9 +90,13 @@ const findPayout = textArr => {
 
 const findFee = textArr => {
   const searchTerm = 'Fremdkostenzuschlag';
-  const feeLine = textArr[textArr.indexOf(searchTerm) + 1];
-  const feeNumberString = feeLine.split(' EUR')[0];
-  return Math.abs(parseGermanNum(feeNumberString));
+  if (textArr.indexOf(searchTerm) > -1) {
+    const feeLine = textArr[textArr.indexOf(searchTerm) + 1];
+    const feeNumberString = feeLine.split(' EUR')[0];
+    return Math.abs(parseGermanNum(feeNumberString));
+  } else {
+    return 0;
+  }
 };
 
 const findTax = textArr => {
@@ -113,28 +127,36 @@ const findTax = textArr => {
   return totalTax;
 };
 
-const isBuy = textArr => textArr.some(t => t.includes('Kauf am'));
+const isBuySingle = textArr => textArr.some(t => t.includes('Kauf am'));
+
+const isBuySavingsPlan = textArr =>
+  textArr.some(t => t.includes('Sparplanausführung am'));
 
 const isSell = textArr => textArr.some(t => t.includes('Verkauf am'));
 
-const isDividend = textArr =>
-  textArr.some(t => t.includes('mit dem Ex-Tag'));
+const isDividend = textArr => textArr.some(t => t.includes('mit dem Ex-Tag'));
 
 export const canParseData = textArr =>
   textArr.some(t => t.includes('TRADE REPUBLIC BANK GMBH')) &&
-  (isBuy(textArr) || isSell(textArr) || isDividend(textArr));
+  (isBuySingle(textArr) ||
+    isBuySavingsPlan(textArr) ||
+    isSell(textArr) ||
+    isDividend(textArr));
 
 export const parseData = textArr => {
   let type, date, isin, company, shares, price, amount, fee, tax;
 
-  if (isBuy(textArr)) {
+  console.log('parseData()');
+  if (isBuySingle(textArr) || isBuySavingsPlan(textArr)) {
     type = 'Buy';
     isin = findISIN(textArr);
     company = findCompany(textArr);
-    date = findDateBuy(textArr);
+    date = isBuySavingsPlan(textArr)
+      ? findDateBuySavingsPlan(textArr)
+      : findDateSingleBuy(textArr);
     shares = findShares(textArr);
     amount = findAmountBuy(textArr);
-    price = amount / shares;
+    price = Math.round((amount / shares) * 100) / 100;
     fee = findFee(textArr);
     tax = 0;
   } else if (isSell(textArr)) {
@@ -144,7 +166,7 @@ export const parseData = textArr => {
     date = findDateSell(textArr);
     shares = findShares(textArr);
     amount = findAmountSell(textArr);
-    price = amount / shares;
+    price = Math.round((amount / shares) * 100) / 100;
     fee = findFee(textArr);
     tax = findTax(textArr);
   } else if (isDividend(textArr)) {
@@ -154,9 +176,11 @@ export const parseData = textArr => {
     date = findDateDividend(textArr);
     shares = findShares(textArr);
     amount = findPayout(textArr);
-    price = amount / shares;
+    price = Math.round((amount / shares) * 100) / 100;
     fee = 0;
     tax = findTax(textArr);
+  } else {
+    console.error('unable to detect order');
   }
 
   const activity = {
@@ -172,8 +196,8 @@ export const parseData = textArr => {
     tax,
   };
 
-  console.log("activity", activity);
-  const valid = every(values(activity), (a) => !!a || a === 0);
+  console.log('activity', activity);
+  const valid = every(values(activity), a => !!a || a === 0);
 
   if (!valid) {
     console.error('Error while parsing PDF', activity);
