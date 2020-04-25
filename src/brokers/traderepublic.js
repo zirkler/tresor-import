@@ -9,14 +9,12 @@ const parseGermanNum = (n) => {
 
 const findISIN = (text) => {
   const isinLine = text[text.findIndex((t) => t.includes("ISIN:"))];
-  console.log("isinLine", isinLine);
   const isin = isinLine.substr(isinLine.length - 12);
   return isin;
 };
 
 const findCompany = (text) => {
   const companyLine = text[text.findIndex((t) => t.includes("BETRAG")) + 1];
-  console.log("companyline", companyLine);
   return companyLine;
 };
 
@@ -64,27 +62,21 @@ const findShares = (textArr) => {
 const findAmountBuy = (textArr) => {
   const searchTerm = "GESAMT";
   const totalAmountLine = textArr[textArr.indexOf(searchTerm) + 1];
-  console.log("totalAmountLine", totalAmountLine);
   const totalAmount = totalAmountLine.split(" ")[0].trim();
-  console.log("totalAmount", totalAmount);
   return parseGermanNum(totalAmount);
 };
 
 const findAmountSell = (textArr) => {
   const searchTerm = "GESAMT";
   const totalAmountLine = textArr[textArr.lastIndexOf(searchTerm) + 1];
-  console.log("totalAmountLine", totalAmountLine);
   const totalAmount = totalAmountLine.split(" ")[0].trim();
-  console.log("totalAmount", totalAmount);
   return parseGermanNum(totalAmount);
 };
 
 const findPayout = (textArr) => {
   const searchTerm = "GESAMT";
   const totalAmountLine = textArr[textArr.lastIndexOf(searchTerm) + 1];
-  console.log("totalAmountLine", totalAmountLine);
   const totalAmount = totalAmountLine.split(" ")[0].trim();
-  console.log("totalAmount", totalAmount);
   return parseGermanNum(totalAmount);
 };
 
@@ -144,10 +136,9 @@ export const canParseData = (textArr) =>
     isSell(textArr) ||
     isDividend(textArr));
 
-export const parseData = (textArr) => {
+export const parseTradeRepublicActivity = (textArr) => {
   let type, date, isin, company, shares, price, amount, fee, tax;
 
-  console.log("parseData()");
   if (isBuySingle(textArr) || isBuySavingsPlan(textArr)) {
     type = "Buy";
     isin = findISIN(textArr);
@@ -157,7 +148,7 @@ export const parseData = (textArr) => {
       : findDateSingleBuy(textArr);
     shares = findShares(textArr);
     amount = findAmountBuy(textArr);
-    price = Math.round((amount / shares) * 100) / 100;
+    price = amount / shares;
     fee = findFee(textArr);
     tax = 0;
   } else if (isSell(textArr)) {
@@ -167,7 +158,7 @@ export const parseData = (textArr) => {
     date = findDateSell(textArr);
     shares = findShares(textArr);
     amount = findAmountSell(textArr);
-    price = Math.round((amount / shares) * 100) / 100;
+    price = amount / shares;
     fee = findFee(textArr);
     tax = findTax(textArr);
   } else if (isDividend(textArr)) {
@@ -177,7 +168,7 @@ export const parseData = (textArr) => {
     date = findDateDividend(textArr);
     shares = findShares(textArr);
     amount = findPayout(textArr);
-    price = Math.round((amount / shares) * 100) / 100;
+    price = amount / shares;
     fee = 0;
     tax = findTax(textArr);
   } else {
@@ -197,7 +188,6 @@ export const parseData = (textArr) => {
     tax,
   };
 
-  console.log("activity", activity);
   const valid = every(values(activity), (a) => !!a || a === 0);
 
   if (!valid) {
