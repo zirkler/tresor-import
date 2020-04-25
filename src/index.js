@@ -1,4 +1,7 @@
-import pdfjs from 'pdfjs-dist';
+import pdfjs from 'pdfjs-dist/build/pdf';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry'
+
+pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 import { parseComdirectActivity } from './brokers/comdirect'
 import { parseTradeRepublicActivity } from './brokers/traderepublic'
