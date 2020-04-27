@@ -1,8 +1,10 @@
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
+import every from 'lodash/every';
+import values from 'lodash/values';
 
-const parseGermanNum = n => {
-  return parseFloat(n.replace(/\./g, '').replace(',', '.'));
+const parseGermanNum = (n) => {
+  return parseFloat(n.replace(/\./g, "").replace(",", "."));
 };
 
 const findISIN = (text) => {
@@ -32,7 +34,7 @@ const findDateBuySavingsPlan = (textArr) => {
   return date;
 };
 
-const findDateSell = textArr => {
+const findDateSell = (textArr) => {
   // Extract the date from a string like this: "Market-Order Verkauf am 04.02.2020, um 14:02 Uhr an der Lang & Schwarz Exchange."
   const searchTerm = "Verkauf am ";
   const dateLine = textArr[textArr.findIndex((t) => t.includes(searchTerm))];
@@ -41,7 +43,7 @@ const findDateSell = textArr => {
   return date;
 };
 
-const findDateDividend = textArr => {
+const findDateDividend = (textArr) => {
   // Extract the date from a string like this: "Dividende mit dem Ex-Tag 13.02.2020."
   const searchTerm = "mit dem Ex-Tag ";
   const dateLine = textArr[textArr.findIndex((t) => t.includes(searchTerm))];
