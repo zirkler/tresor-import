@@ -18,7 +18,6 @@ const findCompany = (text, span) => {
   // span = 2 means its a dividend PDF - dividends dont have the WKN in the same line
   const company = span === 2 ? companyLine.trim() : companyLine.substr(0, companyLine.length - 6).trim();
 
-  console.log(company)
   return company;
 }
 
