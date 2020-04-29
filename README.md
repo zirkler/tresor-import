@@ -6,9 +6,10 @@ This is the PDF Import on [tresor.one](https://tresor.one)
 
 To contribute:
 
-1. clone the repo
-2. run `npm install`
-3. run `npm start`
-4. open [`http://localhost:5000`](http://localhost:5000) in your browser
-5. Import a PDF. Content is in your Javascript console
-6. Write a parser in `src/brokers` to parse that content - see `src/brokers/comdirect.js` for inspiration
+1. fork the repo
+2. install and start `npm i && npm start`
+3. open [`http://localhost:5000`](http://localhost:5000) in your browser
+4. Import a PDF. Content is shown in your Javascript console
+5. Write a parser in `src/brokers` to parse that content - see `src/brokers/comdirect.js` for inspiration
+6. Add and run all tests `npm t`
+7. Create a Pull Request

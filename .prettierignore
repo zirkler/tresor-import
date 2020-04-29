@@ -1,0 +1,4 @@
+dist/**
+demo/js/vendor
+*.html
+*.css

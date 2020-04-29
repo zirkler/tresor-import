@@ -7,7 +7,9 @@
     "build": "webpack",
     "watch": "webpack --watch",
     "start": "npm run build && serve & npm run watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --verbose",
+    "lint": "eslint .",
+    "precommit": "pretty-quick --staged --no-restage && npm run lint && npm t && npm audit"
   },
   "keywords": [
     "tresor",
@@ -23,10 +25,25 @@
     "pdfjs-dist": "^2.3.200"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.9.5",
+    "babel-jest": "^25.4.0",
     "copy-webpack-plugin": "^5.1.1",
+    "eslint": "^6.8.0",
+    "eslint-plugin-jest": "^23.8.2",
+    "eslint-plugin-vue": "^6.2.2",
     "file-loader": "^6.0.0",
+    "husky": "^4.2.5",
+    "jest": "^25.4.0",
+    "jest-cli": "^25.4.0",
+    "prettier": "2.0.5",
+    "pretty-quick": "^2.0.1",
     "serve": "^11.3.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run precommit"
+    }
   }
 }

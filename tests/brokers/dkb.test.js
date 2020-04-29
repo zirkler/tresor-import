@@ -1,0 +1,147 @@
+import { parseData, canParseData } from '../../src/brokers/dkb';
+import {
+  buySamples,
+  sellSamples,
+  dividendsSamples,
+} from './__mocks__/dkb';
+
+
+describe('DKB broker', () => {
+  let consoleErrorSpy;
+
+  test('should accept Buy, Sell, Div DKB PDFs only', () => {
+    expect(canParseData(['BIC BYLADEM1001', 'Dividendengutschrift'])).toEqual(
+      true
+    );
+  });
+
+  test('should not accept any PDFs', () => {
+    expect(canParseData(['42'])).toEqual(false);
+  });
+
+  test('should validate the result', () => {
+    const invalidSample = buySamples[0].filter(item => item !== 'Stück 36');
+    const activity = parseData(invalidSample);
+
+    expect(activity).toEqual(undefined);
+    expect(console.error).toHaveBeenLastCalledWith('Error while parsing PDF', {
+      amount: 4428,
+      broker: 'dkb',
+      company: 'Kurswert',
+      date: '2019-01-25',
+      fee: 10,
+      isin: null,
+      price: 123,
+      shares: NaN,
+      type: 'Buy',
+    });
+  });
+
+  describe('Buy', () => {
+    test('should map pdf data of sample 1 correctly', () => {
+      const activity = parseData(buySamples[0]);
+
+      expect(activity).toEqual({
+        broker: 'dkb',
+        type: 'Buy',
+        date: '2019-01-25',
+        isin: 'US0378331005',
+        company: 'APPLE INC.',
+        shares: 36,
+        price: 123,
+        amount: 4428,
+        fee: 10,
+      });
+    });
+
+    test('should map pdf data of sample 2 correctly', () => {
+      const activity = parseData(buySamples[1]);
+
+      expect(activity).toEqual({
+        broker: 'dkb',
+        type: 'Buy',
+        date: '2016-10-10',
+        isin: 'US88160R1014',
+        company: 'TESLA MOTORS INC.',
+        shares: 1,
+        price: 177.85,
+        amount: 177.85,
+        fee: 10,
+      });
+    });
+    test('should map pdf data of sample 3 correctly', () => {
+      const activity = parseData(buySamples[2]);
+
+      expect(activity).toEqual({
+        broker: 'dkb',
+        type: 'Buy',
+        date: '2016-10-18',
+        isin: 'LU0302296495',
+        company: 'DNB FD-DNB TECHNOLOGY',
+        shares: 0.7419,
+        price: 353.8346,
+        amount: 262.5,
+        fee: 1.5,
+      });
+    });
+  });
+
+  describe('Sell', () => {
+    test('should map pdf data of sample 1 correctly', () => {
+      const activity = parseData(sellSamples[0]);
+
+      expect(activity).toEqual({
+        broker: 'dkb',
+        type: 'Sell',
+        date: '2020-01-27',
+        isin: 'LU1861132840',
+        company: 'AIS - AMUNDI STOXX GL.ART.INT.',
+        shares: 36,
+        price: 123,
+        amount: 4428,
+        fee: 10,
+      });
+    });
+  });
+
+  describe('Dividend', () => {
+    test('should map pdf data of sample 1 correctly', () => {
+      const activity = parseData(dividendsSamples[0]);
+
+      expect(activity).toEqual({
+        broker: 'dkb',
+        type: 'Dividend',
+        date: '2020-02-13',
+        isin: 'US0378331005',
+        company: 'APPLE INC.',
+        shares: 36,
+        price: 0.6019444444444445,
+        amount: 21.67,
+        fee: 0,
+      });
+    });
+    test('should map pdf data of sample 2 correctly', () => {
+      const activity = parseData(dividendsSamples[1]);
+
+      expect(activity).toEqual({
+        broker: 'dkb',
+        type: 'Dividend',
+        date: '2016-03-10',
+        isin: 'US5949181045',
+        company: 'MICROSOFT CORP.',
+        shares: 5,
+        price: 0.27799999999999997,
+        amount: 1.39,
+        fee: 0,
+      });
+    });
+  });
+
+  beforeEach(() => {
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
+  });
+});

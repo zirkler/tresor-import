@@ -1,7 +1,7 @@
-import format from "date-fns/format";
-import parse from "date-fns/parse";
-import every from "lodash/every";
-import values from "lodash/values";
+import format from 'date-fns/format';
+import parse from 'date-fns/parse';
+import every from 'lodash/every';
+import values from 'lodash/values';
 
 const parseGermanNum = (n) => {
   return parseFloat(n.replace(/\./g, "").replace(",", "."));
@@ -136,7 +136,7 @@ export const canParseData = (textArr) =>
     isSell(textArr) ||
     isDividend(textArr));
 
-export const parseTradeRepublicActivity = (textArr) => {
+export const parseData = textArr => {
   let type, date, isin, company, shares, price, amount, fee, tax;
 
   if (isBuySingle(textArr) || isBuySavingsPlan(textArr)) {
@@ -152,7 +152,7 @@ export const parseTradeRepublicActivity = (textArr) => {
     fee = findFee(textArr);
     tax = 0;
   } else if (isSell(textArr)) {
-    type = "Sell";
+    type = 'Sell';
     isin = findISIN(textArr);
     company = findCompany(textArr);
     date = findDateSell(textArr);
@@ -162,7 +162,7 @@ export const parseTradeRepublicActivity = (textArr) => {
     fee = findFee(textArr);
     tax = findTax(textArr);
   } else if (isDividend(textArr)) {
-    type = "Dividend";
+    type = 'Dividend';
     isin = findISIN(textArr);
     company = findCompany(textArr);
     date = findDateDividend(textArr);
@@ -176,9 +176,9 @@ export const parseTradeRepublicActivity = (textArr) => {
   }
 
   const activity = {
-    broker: "traderepublic",
+    broker: 'traderepublic',
     type,
-    date: format(parse(date, "dd.MM.yyyy", new Date()), "yyyy-MM-dd"),
+    date: format(parse(date, 'dd.MM.yyyy', new Date()), 'yyyy-MM-dd'),
     isin,
     company,
     shares,
@@ -191,7 +191,7 @@ export const parseTradeRepublicActivity = (textArr) => {
   const valid = every(values(activity), (a) => !!a || a === 0);
 
   if (!valid) {
-    console.error("Error while parsing PDF", activity);
+    console.error('Error while parsing PDF', activity);
     return undefined;
   } else {
     return activity;
