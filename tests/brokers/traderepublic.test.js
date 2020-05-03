@@ -1,6 +1,7 @@
 import { parseData } from '../../src/brokers/traderepublic';
 
 const stockSingleBuy = require('./__mocks__/traderepublic/stock_single_buy.json');
+const stockSingleLimitBuy = require('./__mocks__/traderepublic/stock_single_limit_buy.json');
 const etfSavingsPlanBuy = require('./__mocks__/traderepublic/etf_savings_plan_buy.json');
 const stockSell = require('./__mocks__/traderepublic/stock_sell.json');
 const stockDividend = require('./__mocks__/traderepublic/stock_dividend.json');
@@ -10,6 +11,25 @@ describe('TradeRepublic broker', () => {
   let consoleErrorSpy;
 
   describe('Stock Single Buy', () => {
+    test('should map the pdf data correctly', () => {
+      const activity = parseData(stockSingleLimitBuy);
+
+      expect(activity).toEqual({
+        broker: 'traderepublic',
+        type: 'Buy',
+        date: '2020-02-24',
+        isin: 'US88160R1014',
+        company: 'Tesla Inc.',
+        shares: 3,
+        price: 768.1,
+        amount: 2304.3,
+        fee: 1,
+        tax: 0,
+      });
+    });
+  });
+
+  describe('Stock Single Limit Buy', () => {
     test('should map the pdf data correctly', () => {
       const activity = parseData(stockSingleBuy);
 
