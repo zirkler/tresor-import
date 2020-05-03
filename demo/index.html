@@ -37,7 +37,7 @@
           <br>
           <ul v-show="activities.length > 0" class="list">
             <li class="list-item" v-for="(activity, i) in activities" :key="i">
-              <div>
+              <div v-if="!activity.parserError">
                 <div>
                   <div class="level is-marginless is-mobile">
                     <div class="level-left">

@@ -9,14 +9,12 @@ const parseGermanNum = n => {
 
 const findISIN = text => {
   const isinLine = text[text.findIndex(t => t.includes('ISIN:'))];
-  console.log('isinLine', isinLine);
   const isin = isinLine.substr(isinLine.length - 12);
   return isin;
 };
 
 const findCompany = text => {
   const companyLine = text[text.findIndex(t => t.includes('BETRAG')) + 1];
-  console.log('companyline', companyLine);
   return companyLine;
 };
 
@@ -41,7 +39,6 @@ const findDateSell = textArr => {
   const searchTerm = 'Verkauf am ';
   const dateLine = textArr[textArr.findIndex(t => t.includes(searchTerm))];
   const date = dateLine.split(searchTerm)[1].trim().substr(0, 10);
-  console.log('dateLine', dateLine);
   return date;
 };
 
@@ -64,27 +61,21 @@ const findShares = textArr => {
 const findAmountBuy = textArr => {
   const searchTerm = 'GESAMT';
   const totalAmountLine = textArr[textArr.indexOf(searchTerm) + 1];
-  console.log('totalAmountLine', totalAmountLine);
   const totalAmount = totalAmountLine.split(' ')[0].trim();
-  console.log('totalAmount', totalAmount);
   return parseGermanNum(totalAmount);
 };
 
 const findAmountSell = textArr => {
   const searchTerm = 'GESAMT';
   const totalAmountLine = textArr[textArr.lastIndexOf(searchTerm) + 1];
-  console.log('totalAmountLine', totalAmountLine);
   const totalAmount = totalAmountLine.split(' ')[0].trim();
-  console.log('totalAmount', totalAmount);
   return parseGermanNum(totalAmount);
 };
 
 const findPayout = textArr => {
   const searchTerm = 'GESAMT';
   const totalAmountLine = textArr[textArr.lastIndexOf(searchTerm) + 1];
-  console.log('totalAmountLine', totalAmountLine);
   const totalAmount = totalAmountLine.split(' ')[0].trim();
-  console.log('totalAmount', totalAmount);
   return parseGermanNum(totalAmount);
 };
 
@@ -146,7 +137,6 @@ export const canParseData = textArr =>
 export const parseData = textArr => {
   let type, date, isin, company, shares, price, amount, fee, tax;
 
-  console.log('parseData()');
   if (isBuySingle(textArr) || isBuySavingsPlan(textArr)) {
     type = 'Buy';
     isin = findISIN(textArr);
@@ -196,7 +186,6 @@ export const parseData = textArr => {
     tax,
   };
 
-  console.log('activity', activity);
   const valid = every(values(activity), a => !!a || a === 0);
 
   if (!valid) {

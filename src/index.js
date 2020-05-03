@@ -1,5 +1,8 @@
-import pdfjs from 'pdfjs-dist';
+import pdfjs from 'pdfjs-dist/build/pdf';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 import * as brokers from './brokers';
+
+pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 const getActivity = textArr => {
   const broker = getBroker(textArr);

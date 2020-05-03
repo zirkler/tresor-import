@@ -31,7 +31,7 @@ const findCompany = textArr =>
   textArr[findTableIndex(textArr) + offsets.companyName].trim();
 
 const findDateBuySell = textArr =>
-  getValueByPreviousElement(textArr, 'Schlusstag/-Zeit').split(' ')[0];
+  getValueByPreviousElement(textArr, 'Schlusstag').split(' ')[0];
 
 const findPrice = textArr =>
   parseGermanNum(
@@ -55,7 +55,11 @@ const findPayout = textArr =>
   );
 
 const isBuy = textArr =>
-  textArr.some(t => t.includes('Wertpapier Abrechnung Kauf'));
+  textArr.some(
+    t =>
+      t.includes('Wertpapier Abrechnung Kauf') ||
+      t.includes('Wertpapier Abrechnung Ausgabe Investmentfonds')
+  );
 
 const isSell = textArr =>
   textArr.some(t => t.includes('Wertpapier Abrechnung Verkauf'));

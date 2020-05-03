@@ -15,7 +15,9 @@ const findISIN = (text, span) => {
 
 const findCompany = (text, span) => {
   const companyLine = text[text.findIndex(t => t.includes('/ISIN')) + span];
-  const company = companyLine.substr(0, companyLine.length - 6).trim();
+  // span = 2 means its a dividend PDF - dividends dont have the WKN in the same line
+  const company = span === 2 ? companyLine.trim() : companyLine.substr(0, companyLine.length - 6).trim();
+
   return company;
 };
 
@@ -29,7 +31,6 @@ const findDateDividend = textArr => {
   const dateLine = textArr[textArr.findIndex(t => t.includes('zahlbar ab'))];
   const datePart = dateLine.split('zahlbar ab')[1].trim().substr(0, 10);
   const date = datePart;
-  // console.log('date', date)
 
   return date;
 };

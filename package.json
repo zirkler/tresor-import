@@ -6,8 +6,8 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch",
-    "start": "serve & npm run watch",
-    "test": "jest",
+    "start": "npm run build && serve & npm run watch",
+    "test": "jest --verbose",
     "lint": "eslint .",
     "precommit": "pretty-quick --staged --no-restage && npm run lint && npm t && npm audit"
   },
