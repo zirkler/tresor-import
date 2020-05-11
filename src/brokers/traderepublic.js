@@ -8,9 +8,17 @@ const parseGermanNum = n => {
 };
 
 const findISIN = text => {
-  const isinLine = text[text.findIndex(t => t.includes('ISIN:'))];
-  const isin = isinLine.substr(isinLine.length - 12);
-  return isin;
+  if (text.some(t => t.includes('ISIN:'))) {
+    // Newer PDFs from traderepublic do contain an explicit "ISIN" string
+    const isinLine = text[text.findIndex(t => t.includes('ISIN:'))];
+    const isin = isinLine.substr(isinLine.length - 12);
+    return isin;
+  } else {
+    // Older PDFs from traderepublic do not contain an explicit "ISIN" string, here we look up the
+    // ISIN value by referencing it from the "shares" index.
+    const isinLine = text[text.findIndex(t => t.includes('Stk.')) - 1];
+    return isinLine;
+  }
 };
 
 const findCompany = text => {

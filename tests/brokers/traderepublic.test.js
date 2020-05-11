@@ -2,6 +2,7 @@ import { parseData } from '../../src/brokers/traderepublic';
 
 const stockSingleBuy = require('./__mocks__/traderepublic/stock_single_buy.json');
 const stockSingleLimitBuy = require('./__mocks__/traderepublic/stock_single_limit_buy.json');
+const stockSingleLimitBuyWithoutExplicitISIN = require('./__mocks__/traderepublic/stock_single_limit_buy_without_explicit_ISIN.json');
 const etfSavingsPlanBuy = require('./__mocks__/traderepublic/etf_savings_plan_buy.json');
 const stockSell = require('./__mocks__/traderepublic/stock_sell.json');
 const stockDividend = require('./__mocks__/traderepublic/stock_dividend.json');
@@ -42,6 +43,25 @@ describe('TradeRepublic broker', () => {
         shares: 382,
         price: 26.14,
         amount: 9985.48,
+        fee: 1,
+        tax: 0,
+      });
+    });
+  });
+
+  describe('Stock Single Limit Buy without explicit ISIN', () => {
+    test('should map the pdf data correctly', () => {
+      const activity = parseData(stockSingleLimitBuyWithoutExplicitISIN);
+
+      expect(activity).toEqual({
+        broker: 'traderepublic',
+        type: 'Buy',
+        date: '2019-07-19',
+        isin: 'DE000SHL1006',
+        company: 'Siemens Healthineers AG',
+        shares: 14,
+        price: 35.7,
+        amount: 499.8,
         fee: 1,
         tax: 0,
       });
